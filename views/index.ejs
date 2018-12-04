@@ -1,0 +1,80 @@
+<!doctype html>
+<html>
+<head>
+    <title>lxcyha webrtc</title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+
+<body>
+<div id="cameraSelector">
+    Video: <select id="camera"></select>
+</div>
+<video autoplay></video>
+
+<script>
+
+    var videoArea = document.querySelector('video')
+    var videoSelect = document.querySelector('#camera')
+    
+    if (typeof navigator === 'undefined' || typeof navigator.mediaDevices === 'undefined' || typeof navigator.mediaDevices.enumerateDevices === 'undefined') {
+        document.querySelector('#cameraSelector').style.visibility = 'hidden'
+    }else{
+        navigator.mediaDevices.enumerateDevices().then(getCameras)
+    }
+
+
+    videoSelect.onchange = startStream
+
+    function getCameras(sourceInfos){
+        for (var i=0; i!==sourceInfos.length;++i){
+            var sourceInfo = sourceInfos[i]
+            var option = document.createElement('option')
+            option.value = sourceInfo.id
+            if (sourceInfo.kind === 'videoinput'){
+                option.text = sourceInfo.label || 'camera ' + videoSelect.length + 1
+                videoSelect.appendChild(option)
+            }
+        }
+    }
+
+
+    startStream()
+
+    function startStream(){
+        navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia||navigator.mozGetUserMedia
+
+        var videoSource = videoSelect.value
+        var constraints = {
+            video: {
+                mandatory:{
+                    maxWidth: 640,
+                    minWidth: 640,
+                    maxHeight: 480,
+                    minHeight: 360
+                },
+                optional:[{
+                    sourceId: videoSource
+                }]
+            },
+            audio: false
+        }
+        navigator.getUserMedia(constraints, onSuccess, onError)
+    }
+
+
+    function onSuccess(stream) {
+        console.log('success! We have a stream')
+        videoArea.className = 'grayscale_filter'
+        videoArea.src = window.URL.createObjectURL(stream)
+        videoArea.play()
+    }
+
+    function onError(error) {
+        console.log('Error with getUserMedia: ', error)
+    }
+</script>
+</body>
+
+
+
+</html>
