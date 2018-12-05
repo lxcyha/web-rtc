@@ -6,31 +6,84 @@
 </head>
 
 <body>
+
+
 <div id="cameraSelector">
     Video: <select id="camera"></select>
 </div>
-<video autoplay></video>
 
+<p>
+    <button id="tackProfilePicture" type="button" autofocus="true">Create Profile Picture</button>
+</p>
+
+
+<video autoplay id="videoTag"></video>
+
+<canvas id="profilePicCanvas" style="display: none"></canvas>
+<div>
+    <img id="profilePictureOutput">
+</div>
 <script>
 
     var videoArea = document.querySelector('video')
     var videoSelect = document.querySelector('#camera')
-    
+    var videoTag = document.querySelector('#videoTag')
+    var profilePicCanvas = document.querySelector('#profilePicCanvas')
+    var profilePictureOutput = document.querySelector('#profilePictureOutput')
+    var tackPicButton = document.querySelector('#tackProfilePicture')
+
+    var streaming = false
+    var width = 240
+    var height = 0
+
     if (typeof navigator === 'undefined' || typeof navigator.mediaDevices === 'undefined' || typeof navigator.mediaDevices.enumerateDevices === 'undefined') {
         document.querySelector('#cameraSelector').style.visibility = 'hidden'
-    }else{
+    } else {
         navigator.mediaDevices.enumerateDevices().then(getCameras)
     }
 
+    tackPicButton.addEventListener('click', function (ev) {
+        tackProfilePic()
+        ev.preventDefault()
+    }, false)
+
+    videoTag.addEventListener('canplay', function (ev) {
+        if (!streaming){
+            height = videoTag.videoHeight / (videoTag.videoWidth / width)
+
+            if (isNaN(height)){
+                height = width / (4/3)
+            }
+
+            videoTag.setAttribute('width' , width)
+            videoTag.setAttribute('height' , height)
+            profilePicCanvas.setAttribute('width' , width)
+            profilePicCanvas.setAttribute('height' , height)
+            streaming = true
+        }
+    },false)
+
+    function tackProfilePic() {
+        var context = profilePicCanvas.getContext("2d")
+        if (height && width) {
+            profilePicCanvas.width = width
+            profilePicCanvas.height = height
+            context.drawImage(videoTag, 0, 0, width, height)
+            var data = profilePicCanvas.toDataURL('image/png')
+            profilePictureOutput.setAttribute('src', data)
+        }
+
+
+    }
 
     videoSelect.onchange = startStream
 
-    function getCameras(sourceInfos){
-        for (var i=0; i!==sourceInfos.length;++i){
+    function getCameras(sourceInfos) {
+        for (var i = 0; i !== sourceInfos.length; ++i) {
             var sourceInfo = sourceInfos[i]
             var option = document.createElement('option')
             option.value = sourceInfo.id
-            if (sourceInfo.kind === 'videoinput'){
+            if (sourceInfo.kind === 'videoinput') {
                 option.text = sourceInfo.label || 'camera ' + videoSelect.length + 1
                 videoSelect.appendChild(option)
             }
@@ -40,19 +93,19 @@
 
     startStream()
 
-    function startStream(){
-        navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia||navigator.mozGetUserMedia
+    function startStream() {
+        navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia
 
         var videoSource = videoSelect.value
         var constraints = {
             video: {
-                mandatory:{
-                    maxWidth: 640,
-                    minWidth: 640,
-                    maxHeight: 480,
-                    minHeight: 360
+                mandatory: {
+                    maxWidth: 240,
+                    minWidth: 240,
+                    maxHeight: 240,
+                    minHeight: 240
                 },
-                optional:[{
+                optional: [{
                     sourceId: videoSource
                 }]
             },
@@ -74,7 +127,6 @@
     }
 </script>
 </body>
-
 
 
 </html>
