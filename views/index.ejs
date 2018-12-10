@@ -28,7 +28,7 @@
     var sendMessage = document.querySelector('#sendMessage')
     var chatArea = document.querySelector('#chatArea')
     var signalingArea = document.querySelector('#signalingArea')
-    var ROOM = 'chat'
+    var ROOM = 'chat_room'
     var SIGNAL_ROOM = 'signal_room'
     var configuration = {
         'iceServers': [{
@@ -36,8 +36,11 @@
         }]
     }
     var rtcPeerConn
+    // var receiverRtcPeerConn
 
     io = io.connect()
+
+
     io.emit('ready', {"chat_room": ROOM, "signal_room": SIGNAL_ROOM})
 
     io.emit('signal', {"type": "user_here", "message": "Are your ready for a call?", "room": SIGNAL_ROOM})
@@ -67,7 +70,6 @@
         }
 
     })
-
     function startSignaling() {
         displaySignalMessage('starting singnaling')
 
@@ -114,7 +116,7 @@
             io.emit('signal', {
                 type: "SDP",
                 message: JSON.stringify({sdp: rtcPeerConn.localDescription}),
-                root: SIGNAL_ROOM
+                room: SIGNAL_ROOM
             })
         }, logError)
     }
@@ -122,6 +124,7 @@
     function logError(error) {
         displaySignalMessage(error.name + ': ' + error.message)
     }
+
 
     io.on('announce', function (data) {
         displayMessage(data.message)

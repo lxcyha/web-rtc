@@ -12,11 +12,16 @@ app.get('/',function (req, res) {
     res.render('index.ejs')
 })
 
+app.get('/aa',function (req, res) {
+    res.render('aa.ejs')
+})
+
+
 app.io.route('ready', function (req) {
     req.io.join(req.data.chat_room)
     req.io.join(req.data.signal_room)
-    app.io.room(req.data).broadcast('announce',{
-        message: 'New client in the '+ req.data + 'room.'
+    app.io.room(req.data.chat_room).broadcast('announce',{
+        message: 'New client in the '+ req.data.chat_room + 'room.'
     })
 })
 
@@ -28,7 +33,7 @@ app.io.route('send', function (req) {
 })
 
 app.io.route('signal', function (req) {
-    app.io.room(req.data.room).broadcast('signaling_message',{
+    req.io.room(req.data.room).broadcast('signaling_message',{
         type: req.data.type,
         message: req.data.message
     })
