@@ -97,7 +97,7 @@
 
         rtcPeerConn.onaddstream = function (evt) {
             displaySignalMessage('going to add their stream')
-            theirVideoArea.srcObject = evt.stream
+            theirVideoArea.src = URL.createObjectURL(evt.stream)
         }
 
         navigator.mediaDevices.getUserMedia({
@@ -105,7 +105,7 @@
             audio: true
         }).then(function(stream){
             displaySignalMessage('going to display my stream...')
-            myVideoArea.srcObject = stream
+            myVideoArea.src = URL.createObjectURL(stream)
             rtcPeerConn.addStream(stream)
         }).catch(logError);
     }
