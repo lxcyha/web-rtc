@@ -38,7 +38,7 @@
     var rtcPeerConn
     var dataChannelOptions = {
         ordered: false, // no guaranteed delivery, unreliable but faster
-        maxRetransmitTime: 1000 // milliseconds
+        maxPacketLifeTime: 1000 // milliseconds
     }
     var dataChannel
 
