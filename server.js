@@ -21,6 +21,10 @@ app.get('/transfer-file',function (req, res) {
     res.render('transfer-file.ejs')
 })
 
+app.get('/screen-sharing',function (req, res) {
+    res.render('screen-sharing.ejs')
+})
+
 
 app.io.route('ready', function (req) {
     req.io.join(req.data.chat_room)
