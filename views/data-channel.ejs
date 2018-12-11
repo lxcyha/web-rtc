@@ -59,7 +59,7 @@
             var message = JSON.parse(data.message)
             if (message.sdp) {
                 displaySignalMessage('get remote description')
-                rtcPeerConn.setRemoteDescription(new RTCSessionDescription(message.sdp)).then( function () {
+                rtcPeerConn.setRemoteDescription(new RTCSessionDescription(message.sdp)).then(function () {
 
                     displaySignalMessage('setRemoteDescription success ', rtcPeerConn.remoteDescription.type)
                     if (rtcPeerConn.remoteDescription.type === 'offer') {
@@ -73,12 +73,12 @@
         }
 
     })
+
     function startSignaling() {
         displaySignalMessage('starting singnaling')
 
         rtcPeerConn = new webkitRTCPeerConnection(configuration, null)
         dataChannel = rtcPeerConn.createDataChannel('textMessages', dataChannelOptions)
-
         dataChannel.onopen = dataChannelStateChanged
         rtcPeerConn.ondatachannel = receiveDataChannel
 
@@ -99,7 +99,7 @@
             displaySignalMessage('on negotiation called')
             rtcPeerConn.createOffer().then(function (desc) {
                 sendLocalDesc(desc)
-            },logError)
+            }, logError)
         }
 
         rtcPeerConn.onaddstream = function (evt) {
@@ -108,9 +108,16 @@
         }
 
         navigator.mediaDevices.getUserMedia({
-            video: true,
-            audio: true
-        }).then(function(stream){
+            video: {
+                mandatory: {
+                    minWidth: 180,
+                    minHeight: 180,
+                    maxWidth: 320,
+                    maxHeight: 320
+                }
+            },
+            audio: false
+        }).then(function (stream) {
             displaySignalMessage('going to display my stream...')
             myVideoArea.srcObject = stream
             rtcPeerConn.addStream(stream)
@@ -118,12 +125,14 @@
     }
 
     function dataChannelStateChanged() {
-        if (dataChannel.readyState === 'open'){
-            displaySignalMessage('DataChannel open')
+        if (dataChannel.readyState === 'open') {
+            displaySignalMessage('Data Channel open')
             dataChannel.onmessage = receiveDataChannelMessage
         }
     }
+
     function receiveDataChannel(event) {
+        console.log(event)
         displaySignalMessage('Receiving a data channel')
         dataChannel = event.channel
         dataChannel.onmessage = receiveDataChannelMessage
