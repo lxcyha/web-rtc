@@ -1,0 +1,21 @@
+{
+  "name": "getscreenmedia",
+  "version": "5.0.2",
+  "description": "A browser module for attempting to get access to a MediaStream of a user's screen. With a nice node-like API.",
+  "main": "getscreenmedia.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/otalk/getScreenMedia"
+  },
+  "keywords": [
+    "browser",
+    "getUserMedia",
+    "screen sharing",
+    "WebRTC"
+  ],
+  "author": "Henrik Joreteg <henrik@andyet.net>",
+  "license": "MIT",
+  "peerDependencies": {
+    "webrtc-adapter": "^6.0.0"
+  }
+}
