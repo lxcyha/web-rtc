@@ -36,10 +36,13 @@
         }]
     }
     var rtcPeerConn
-    // var receiverRtcPeerConn
+    var dataChannelOptions = {
+        ordered: false, // no guaranteed delivery, unreliable but faster
+        maxRetransmitTime: 1000 // milliseconds
+    }
+    var dataChannel
 
     io = io.connect()
-
 
     io.emit('ready', {"chat_room": ROOM, "signal_room": SIGNAL_ROOM})
 
@@ -73,7 +76,11 @@
     function startSignaling() {
         displaySignalMessage('starting singnaling')
 
-        rtcPeerConn = new webkitRTCPeerConnection(configuration)
+        rtcPeerConn = new webkitRTCPeerConnection(configuration, null)
+        dataChannel = rtcPeerConn.createDataChannel('textMessages', dataChannelOptions)
+
+        dataChannel.onopen = dataChannelStateChanged
+        rtcPeerConn.ondatachannel = receiveDataChannel
 
         rtcPeerConn.onicecandidate = function (evt) {
             if (evt.candidate) {
@@ -108,6 +115,23 @@
             myVideoArea.src = URL.createObjectURL(stream)
             rtcPeerConn.addStream(stream)
         }).catch(logError);
+    }
+
+    function dataChannelStateChanged() {
+        if (dataChannel.readyState === 'open'){
+            displaySignalMessage('DataChannel open')
+            dataChannel.onmessage = receiveDataChannelMessage
+        }
+    }
+    function receiveDataChannel(event) {
+        displaySignalMessage('Receiving a data channel')
+        dataChannel = event.channel
+        dataChannel.onmessage = receiveDataChannelMessage
+    }
+
+    function receiveDataChannelMessage(event) {
+        displaySignalMessage('Incoming Message')
+        displayMessage('From DataChannel: ' + event.data)
     }
 
     function sendLocalDesc(desc) {
@@ -145,6 +169,8 @@
 
     sendMessage.addEventListener('click', function (ev) {
         io.emit('send', {"author": myName.value, "message": myMessage.value})
+        dataChannel.send(myName.value + ' says ' + myMessage.value)
+
         ev.preventDefault()
     }, false)
 
