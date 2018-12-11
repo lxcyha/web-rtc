@@ -12,8 +12,8 @@ app.get('/',function (req, res) {
     res.render('index.ejs')
 })
 
-app.get('/aa',function (req, res) {
-    res.render('aa.ejs')
+app.get('/data-channel',function (req, res) {
+    res.render('data-channel.ejs')
 })
 
 
