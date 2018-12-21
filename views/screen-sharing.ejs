@@ -4,6 +4,7 @@
     <title>lxcyha webrtc</title>
     <link rel="stylesheet" href="/style.css">
     <script src="/socket.io/socket.io.js"></script>
+    <script src="getscreenmedia.bundle.js"></script>
 </head>
 
 <body>
@@ -25,6 +26,20 @@
 </div>
 
 <script>
+
+
+    getScreenMedia(function (err, stream) {
+        // if the browser doesn't support user media
+        // or the user says "no" the error gets passed
+        // as the first argument.
+        if (err) {
+            console.log('failed');
+        } else {
+            console.log('got a stream', stream);
+        }
+    });
+
+
 
     var myVideoArea = document.querySelector('#myVideoTag')
     var theirVideoArea = document.querySelector('#theirVideoTag')

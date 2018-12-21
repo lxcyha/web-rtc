@@ -16,7 +16,8 @@ npm install getscreenmedia
 
 ## How to use it
 
-First build and install a domain-specific extension for [Chrome](https://github.com/otalk/getScreenMedia/tree/master/chrome-extension-sample). Firefox and Microsoft Edge will work out of the box.
+First build and install a domain-specific extension for [Chrome](https://github.com/otalk/getScreenMedia/tree/master/chrome-extension-sample). 
+Firefox and Microsoft Edge will work out of the box.
 
 Use the snippet below to get a screen stream, similar to [getUserMedia](https://github.com/otalk/getUserMedia).
 ```js
@@ -37,11 +38,13 @@ getScreenMedia(function (err, stream) {
 
 ## Why?
 
-All supported browsers require the use of an extension and don't offer an cross-browser API which is annoying and error-prone. Node-style (error-first) APIs that are cross-browser, installable with npm and runnable on the client === win!
+All supported browsers require the use of an extension and don't offer an cross-browser API which is annoying and error-prone. 
+Node-style (error-first) APIs that are cross-browser, installable with npm and runnable on the client === win!
 
 ## Error handling
 
-Error handling (denied requests, etc) are handled mostly by the underlying [getUserMedia lib](https://github.com/HenrikJoreteg/getUserMedia). However this adds one more error type:
+Error handling (denied requests, etc) are handled mostly by the underlying [getUserMedia lib](https://github.com/HenrikJoreteg/getUserMedia).
+ However this adds one more error type:
 
 - `"HTTPS_REQUIRED"`
 

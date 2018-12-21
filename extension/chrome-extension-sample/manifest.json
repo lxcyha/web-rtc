@@ -1,6 +1,6 @@
 {
-  "name": "Screensharing Sample",
-  "description": "Screensharing utility sample for getscreenmedia",
+  "name": "Screensharing",
+  "description": "Screensharing",
   "version": "0.0.1",
   "manifest_version": 2,
   "minimum_chrome_version": "34",
@@ -14,11 +14,11 @@
   },
   "content_scripts": [ {
     "js": [ "content.js" ],
-    "matches": [ "https://simplewebrtc.com/*" ]
+    "matches": [ "http://localhost:3000/*" ]
   }],
   "externally_connectable": {
       "matches": [
-          "https://simplewebrtc.com/*"
+          "http://localhost:3000/*"
       ]
   }
 }

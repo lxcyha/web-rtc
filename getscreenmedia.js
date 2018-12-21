@@ -1,0 +1,1 @@
+window['getScreenMedia'] = require('getscreenmedia');
